@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.guet.mapper.RoleMapper">
+    <!--
+    1、类中的属性和表中的字段名称不一致
+    2、关联查询
+    登录
+    如果成功，则获取当前用户的权限（菜单），之前是JDBC实现
+    Now，我们如何使用MyBatis来实现登录，以及登录成功后的菜单的获取
+    根据User找Role，再根据Role找Permission
+    -->
+    <resultMap id="rolePermissionMap" type="cn.edu.guet.bean.Role">
+        <id property="id" column="role_id"></id>
+        <result property="name" column="role_name"></result>
+
+        <collection property="permissionList" ofType="permission">
+            <id property="id" column="permission_id"/>
+            <result property="pId" column="pid"/>
+            <result property="name" column="permission_name"/>
+            <result property="url" column="url"/>
+            <result property="icon" column="icon"/>
+            <result property="target" column="target"/>
+            <result property="isParent" column="isParent"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRoleById" resultMap="rolePermissionMap">
+        <!--
+        假设角色ID已知
+        -->
+        SELECT r.*,p.* FROM role r,role_permission rp,permission p WHERE r.role_id=rp.role_id AND rp.permission_id=p.permission_id
+        AND r.role_id=#{value}
+    </select>
+</mapper>

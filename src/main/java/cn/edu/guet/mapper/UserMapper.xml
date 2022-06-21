@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.guet.mapper.UserMapper">
+
+    <insert id="saveUser" parameterType="user">
+        INSERT INTO sys_user(id,name,nick_name,password,salt) VALUES(#{id},#{name},#{nick_name},#{password},#{salt})
+    </insert>
+
+    <select id="getAllUser" resultType="user">
+        SELECT * FROM sys_user
+    </select>
+
+<!--    <select id="getUserByName" resultMap="userMap" parameterType="string">-->
+<!--        &lt;!&ndash; SELECT id as userId,name as username,nick_name as nickName,password,salt FROM sys_user WHERE name=#{value} &ndash;&gt;-->
+<!--        SELECT * FROM sys_user WHERE name=#{value}-->
+<!--    </select>-->
+    <delete id="deleteUserById" parameterType="string">
+        DELETE FROM sys_user WHERE id=#{value}
+    </delete>
+
+    <update id="updateUser" parameterType="user">
+        UPDATE sys_user SET name=#{name},nick_name=#{nick_name},password=#{password},salt=#{salt}
+        WHERE id=#{id}
+    </update>
+
+    <resultMap id="userMap" type="user">
+        <id property="userId" column="id"></id> <!-- 只有主键才会用id标签 -->
+        <result property="username" column="name"></result>
+        <result property="nickName" column="nick_name"></result>
+        <result property="password" column="password"></result>
+        <result property="salt" column="salt"></result>
+    </resultMap>
+    
+    <resultMap id="userRoleMap" type="user">
+        <id property="userId" column="userid"></id> <!-- 只有主键才会用id标签 -->
+        <result property="username" column="username"></result>
+        <result property="nickName" column="nick_name"></result>
+        <result property="password" column="password"></result>
+        <result property="salt" column="salt"></result>
+        <association property="role" javaType="role">
+            <id property="id" column="id"></id>
+            <result property="name" column="name"></result>
+        </association>
+    </resultMap>
+
+    <select id="getUserByName" resultMap="userRoleMap" parameterType="string">
+        SELECT * FROM sys_user u,role r WHERE u.role_id=r.id AND u.username=#{value}
+    </select>
+
+</mapper>
