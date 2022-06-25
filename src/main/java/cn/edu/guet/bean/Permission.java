@@ -1,5 +1,6 @@
 package cn.edu.guet.bean;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Permission {
@@ -10,6 +11,8 @@ public class Permission {
     private String icon;
     private String target;
     private String isParent;
+
+    private List<Permission> childPermission;
 
     public String getId() {
         return id;
@@ -67,6 +70,27 @@ public class Permission {
         this.isParent = isParent;
     }
 
+    public List<Permission> getChildPermission() {
+        return childPermission;
+    }
+
+    public void setChildPermission(List<Permission> childPermission) {
+        this.childPermission = childPermission;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Permission that = (Permission) o;
+        return Objects.equals(id, that.id) && Objects.equals(pId, that.pId) && Objects.equals(name, that.name) && Objects.equals(url, that.url) && Objects.equals(icon, that.icon) && Objects.equals(target, that.target) && Objects.equals(isParent, that.isParent) && Objects.equals(childPermission, that.childPermission);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pId, name, url, icon, target, isParent, childPermission);
+    }
+
     @Override
     public String toString() {
         return "Permission{" +
@@ -77,19 +101,7 @@ public class Permission {
                 ", icon='" + icon + '\'' +
                 ", target='" + target + '\'' +
                 ", isParent='" + isParent + '\'' +
+                ", childPermission=" + childPermission +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Permission that = (Permission) o;
-        return Objects.equals(id, that.id) && Objects.equals(pId, that.pId) && Objects.equals(name, that.name) && Objects.equals(url, that.url) && Objects.equals(icon, that.icon) && Objects.equals(target, that.target) && Objects.equals(isParent, that.isParent);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, pId, name, url, icon, target, isParent);
     }
 }

@@ -11,4 +11,5 @@ public interface UserMapper {
     // 根据name获取用户
     int deleteUserById(String id);
     int updateUser(User user);
+    User getUserById(String id);
 }

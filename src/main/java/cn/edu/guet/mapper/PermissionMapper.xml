@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.edu.guet.mapper.PermissionMapper">
+
+    <select id="searchPermission" resultType="cn.edu.guet.bean.Permission">
+        <!--
+        SELECT permission_id as id,permission_name as name,url FROM permission
+        WHERE permission_name LIKE CONCAT ('%',#{name},'%')
+          AND url LIKE CONCAT ('%',#{url},'%')
+          -->
+        <!--
+        SELECT permission_id as id,permission_name as name,url FROM permission
+        WHERE 1=1
+        <if test="name!=null">
+            AND permission_name LIKE CONCAT ('%',#{name},'%')
+        </if>
+        <if test="url!=null">
+            AND url LIKE CONCAT ('%',#{url},'%')
+        </if>
+        -->
+        <!-- where标签会自动去掉第一个条件的AND -->
+        SELECT permission_id as id,permission_name as name,url FROM permission
+        <where>
+            <if test="name!=null">
+                AND permission_name LIKE CONCAT ('%',#{name},'%')
+            </if>
+            <if test="url!=null">
+                AND url LIKE CONCAT ('%',#{url},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--
+    1、类的属性名称和表字段名称不一致
+    2、关联查询
+    -->
+    <resultMap id="selfJoin" type="permission">
+        <!-- 菜单自身的信息 -->
+        <id property="id" column="permission_id"/>
+        <result property="name" column="permission_name"/>
+        <result property="pId" column="pid"/>
+        <result property="url" column="url"/>
+        <result property="icon" column="icon"/>
+        <result property="target" column="target"/>
+        <result property="isParent" column="isParent"/>
+
+        <!-- 子菜单的信息 -->
+        <collection property="childPermission" ofType="permission" column="permission_id" select="getChildPermission">
+
+        </collection>
+    </resultMap>
+
+    <select id="getChildPermission" resultType="permission">
+        SELECT * FROM permission WHERE pid=#{value}
+    </select>
+
+    <!-- 根据ID查询一个菜单，如果给定的ID是一个父菜单（至少有1个子菜单），那么会执行关联查询，把子菜单一并查询出来 -->
+    <select id="getPermissionById" resultMap="selfJoin">
+        SELECT * FROM permission WHERE permission_id=#{value}
+    </select>
+</mapper>

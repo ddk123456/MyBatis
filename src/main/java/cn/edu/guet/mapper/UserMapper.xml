@@ -25,8 +25,8 @@
     </update>
 
     <resultMap id="userMap" type="user">
-        <id property="userId" column="id"></id> <!-- 只有主键才会用id标签 -->
-        <result property="username" column="name"></result>
+        <id property="userId" column="userid"></id> <!-- 只有主键才会用id标签 -->
+        <result property="username" column="username"></result>
         <result property="nickName" column="nick_name"></result>
         <result property="password" column="password"></result>
         <result property="salt" column="salt"></result>
@@ -47,5 +47,10 @@
     <select id="getUserByName" resultMap="userRoleMap" parameterType="string">
         SELECT * FROM sys_user u,role r WHERE u.role_id=r.id AND u.username=#{value}
     </select>
-
+    <select id="getUserById" resultMap="userMap">
+        SELECT * FROM users WHERE userid=#{value}
+    </select>
+    <!-- 使用自带的二级缓存 -->
+    <!-- <cache/> -->
+     <cache type="cn.edu.guet.MybatisRedisCache"/>
 </mapper>
